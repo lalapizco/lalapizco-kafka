@@ -1,45 +1,40 @@
-package com.lalapizco.demo.kafka;
+package com.lalapizco.demo.kafka.producers;
 
-import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.clients.producer.RoundRobinPartitioner;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class ProducerDemoWithCallback {
+public class ProducerDemoKeys {
 
     private static final Logger log = LoggerFactory.getLogger(ProducerDemo.class.getSimpleName());
+    private static final String demoTopicName = "demo_java";
 
     public static void main(String[] args) {
-        log.info("Hello World");
+        log.info("Producer with Callback");
 
         Properties properties = getProducerProperties();
 
         KafkaProducer<String,String> producer = new KafkaProducer<>(properties);
 
-        for(int j=0; j<10;j++) {
-            for (int i = 0; i<30; i++) {
-                ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo_java", "Hello World " + i);
+        for (int j = 0; j<2; j++) {
+            for (int i = 0; i < 10; i++) {
+                String key = "id_" + i;
+                String value = "Hello World " + i;
+                ProducerRecord<String, String> producerRecord = new ProducerRecord<>(demoTopicName, key, value);
 
                 //Send data
                 producer.send(producerRecord, (metadata, e) -> {
                     if(e == null) {
-                        log.info("Received metadata \n" +
-                                "Topic: " + metadata.topic()+ "\n" +
-                                "Partition: " + metadata.partition()+ "\n" +
-                                "Offset: " + metadata.offset()+ "\n" +
-                                "Timestamp: " + metadata.timestamp()+ "\n");
+                        log.info("Key: "+ key + " | Partition: " + metadata.partition());
                     } else {
                         log.error(e.getMessage());
                     }
                 });
             }
-
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
