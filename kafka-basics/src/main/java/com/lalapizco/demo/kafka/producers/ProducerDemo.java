@@ -1,4 +1,4 @@
-package com.lalapizco.demo.kafka;
+package com.lalapizco.demo.kafka.producers;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -13,7 +13,7 @@ public class ProducerDemo {
     private static final Logger log = LoggerFactory.getLogger(ProducerDemo.class.getSimpleName());
 
     public static void main(String[] args) {
-        log.info("Hello World");
+        log.info("Producer Demo Class");
 
         Properties properties = getProducerProperties();
 
